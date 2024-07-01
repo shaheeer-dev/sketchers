@@ -1,10 +1,13 @@
 'use client'
-import SketchBoard from '@/components/board/SketchBoard'
+
+import CreateRoom from '@/components/room/CreateRoom'
 import React from 'react'
 
 const page = () => {
   return (
-    <SketchBoard />
+    <>
+      <CreateRoom />
+    </>
   )
 }
 

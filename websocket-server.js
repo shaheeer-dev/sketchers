@@ -20,17 +20,21 @@ app.prepare().then(() => {
     console.log('ClientID: ', socket.id);
 
 
-    socket.join("room-1");
 
-    socket.on("drawing", (data) => {
-      console.log("received data: ", data)
-      socket.to("room-1").emit("receive-drawing", data);
+    // Emit events to all connected clients
+    socket.on('join-room', (roomId) => {
+      socket.join(roomId);
     })
 
-    socket.on("remove-all", (data) => {
-      socket.to("room-1").emit("clear", data);
+    socket.on("drawing", ({shapes, roomId}) => {
+      socket.to(roomId).emit("receive-drawing", shapes);
     })
 
+    socket.on("remove-all", (roomId) => {
+      socket.to(roomId).emit("clear", roomId);
+    })
+
+    // Disconnect
     socket.on('disconnect', () => {
       console.log('Client disconnected');
     });
