@@ -1,25 +1,26 @@
-'use client'
 import React, { useEffect, useRef, useState } from 'react'
 import { Editor, TLShape, Tldraw } from 'tldraw'
-import CustomToolbar from './toolbar/CustomToolbar'
+import CustomToolbar from '../toolbar/CustomToolbar'
 import { socket } from '@/socket'
+import { useParams } from 'next/navigation'
 
 const SketchBoard = () => {
   const editorRef = useRef<Editor | null>(null);
-  const [userName, setUserName] = useState<string>('');
+  const { roomId }: { roomId: string } = useParams();
+  // const [userName, setUserName] = useState<string>('');
   const handleShapeChange = () => {
     const editor = editorRef.current;
-    if (editor && userName === 'Shaheer') {
+    if (editor) {
       const shapes = editor.getCurrentPageShapes();
-      socket.emit('drawing', shapes);
+      socket.emit('drawing', {shapes, roomId});
       console.log("emitting")
     }
   };
 
-
   const drawShapes = (shapes: any) => {
     const editor = editorRef.current;
     if (editor) {
+      console.log('drawShapes', shapes)
       editor.createShapes(shapes);
     }
   };
@@ -40,6 +41,7 @@ const SketchBoard = () => {
   useEffect(() => {
     socket.on('receive-drawing', receiveDrawing);
     socket.on("clear", clearAll)
+    socket.emit('join-room', roomId)
 
     // Cleanup on unmount
     return () => {
@@ -50,8 +52,7 @@ const SketchBoard = () => {
 
   return (
     <>
-      <div className="fixed inset-0">
-        <input value={userName} onChange={(e) => setUserName(e.target.value)} />
+      <div className="fixed inset-0 w-1/2 h-1/2 mx-auto">
         <Tldraw
         forceMobile
         components={{
@@ -61,7 +62,7 @@ const SketchBoard = () => {
           ActionsMenu: null,
           MenuPanel: null, 
           QuickActions: null,
-          Toolbar: CustomToolbar,
+          Toolbar: () => CustomToolbar(roomId),
         }
         }
         cameraOptions={{isLocked: true}}

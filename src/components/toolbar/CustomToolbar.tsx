@@ -2,7 +2,7 @@ import React from 'react'
 import { DefaultToolbar, TldrawUiMenuItem, useEditor, useTools } from 'tldraw'
 import { socket } from '@/socket'
 
-const CustomToolbar = () => {
+const CustomToolbar = (roomId: String) => {
   const editor = useEditor()
 	const tools = useTools()
   return (
@@ -12,7 +12,7 @@ const CustomToolbar = () => {
       <button
         onClick={() => {
           editor.selectAll().deleteShapes(editor.getSelectedShapeIds())
-          socket.emit("remove-all", 'remove-all')
+          socket.emit("remove-all", roomId)
         }}
         title="delete all"
         className='w-9 h-10 text-red-500'
