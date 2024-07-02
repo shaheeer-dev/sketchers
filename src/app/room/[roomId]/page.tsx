@@ -8,7 +8,7 @@ import { socket } from '@/socket'
 
 const page = () => {
   const { userExists, loading, setUserExists } = useUserCheck();
-  const { roomId } = useParams()
+  const { roomId }: { roomId: string } = useParams()
   
   if(loading) {
     return (

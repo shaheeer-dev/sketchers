@@ -3,31 +3,31 @@ import { Editor, TLShape, Tldraw } from 'tldraw'
 import CustomToolbar from '../toolbar/CustomToolbar'
 import { socket } from '@/socket'
 import { useParams } from 'next/navigation'
+import { Resizable } from 're-resizable';
 
 const SketchBoard = () => {
   const editorRef = useRef<Editor | null>(null);
   const { roomId }: { roomId: string } = useParams();
-  // const [userName, setUserName] = useState<string>('');
+  // const playerName = localStorage.getItem('player')
+  const [playerName, setPlayerName] = useState<string>(() => localStorage.getItem('playerName') || '');
   const handleShapeChange = () => {
     const editor = editorRef.current;
-    if (editor) {
+    //  TODO - get player name whose current turn
+    if (editor &&  playerName === 'Shaheer') {
       const shapes = editor.getCurrentPageShapes();
-      socket.emit('drawing', {shapes, roomId});
-      console.log("emitting")
+      socket.emit('drawing', {shapes, roomId, player: playerName});
     }
   };
 
-  const drawShapes = (shapes: any) => {
+  const drawShapes = (data: any) => {
     const editor = editorRef.current;
     if (editor) {
-      console.log('drawShapes', shapes)
-      editor.createShapes(shapes);
+      editor.createShapes(data.shapes);
     }
   };
 
-  const receiveDrawing = (shapes: TLShape[]) => {
-    console.log("receiving",shapes)
-    drawShapes(shapes);
+  const receiveDrawing = (data: { shapes: TLShape[], player: string }) => {
+    drawShapes(data);
   }
 
   const clearAll = () => {
@@ -52,7 +52,7 @@ const SketchBoard = () => {
 
   return (
     <>
-      <div className="fixed inset-0 w-1/2 h-1/2 mx-auto">
+      <div className="h-[90%] mx-auto">
         <Tldraw
         forceMobile
         components={{

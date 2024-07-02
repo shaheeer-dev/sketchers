@@ -16,23 +16,27 @@ app.prepare().then(() => {
   const io = new Server(server);
 
   io.on('connection', socket => {
-    console.log('Client connected');
-    console.log('ClientID: ', socket.id);
-
-
-
     // Emit events to all connected clients
     socket.on('join-room', (roomId) => {
       socket.join(roomId);
+      socket.to(roomId).emit("new-player-joined", socket.id)
     })
 
-    socket.on("drawing", ({shapes, roomId}) => {
-      socket.to(roomId).emit("receive-drawing", shapes);
+    socket.on("drawing", ({shapes, roomId, player}) => {
+      socket.to(roomId).emit("receive-drawing", { shapes, player });
     })
 
     socket.on("remove-all", (roomId) => {
       socket.to(roomId).emit("clear", roomId);
     })
+
+    socket.on('send-message', ({input, roomId}) => {
+      socket.to(roomId).emit('receive-message', {input, roomId});
+    })
+
+    socket.on('leave-room', ({roomId, player}) => {
+      socket.to(roomId).emit('player-left', player)
+    }) 
 
     // Disconnect
     socket.on('disconnect', () => {
