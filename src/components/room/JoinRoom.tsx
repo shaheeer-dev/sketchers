@@ -1,14 +1,14 @@
-import { socket } from '@/socket';
+import { socket } from '@/socket'
 import React from 'react'
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation'
 
 const JoinRoom = () => {
-  const router = useRouter();
+  const router = useRouter()
 
   const  handleFormSubmit = (event: any) =>  {
-    event.preventDefault();
-    const roomId = event.target.roomId.value;
-    console.log("joining room", roomId)
+    event.preventDefault()
+    const roomId = event.target.roomId.value
+    console.log('joining room', roomId)
     socket.emit('join-room', roomId)
     router.push(`/room/${roomId}`)
   }

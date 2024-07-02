@@ -1,10 +1,10 @@
 import React from 'react'
-import axios from 'axios';
-import { useRouter } from 'next/navigation';
-import JoinRoom from './JoinRoom';
+import axios from 'axios'
+import { useRouter } from 'next/navigation'
+import JoinRoom from './JoinRoom'
 
 const CreateRoom = () => {
-  const router = useRouter();
+  const router = useRouter()
 
   const createRoom = async () => {
     const response = await axios.post('/api/rooms')
@@ -14,8 +14,8 @@ const CreateRoom = () => {
   }
   return (
     <>
-    <button onClick={createRoom}>Create Room</button>
-    <JoinRoom />
+      <button onClick={createRoom}>Create Room</button>
+      <JoinRoom />
     </>
   )
 }
