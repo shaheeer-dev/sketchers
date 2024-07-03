@@ -1,16 +1,16 @@
-import { socket } from '@/socket'
-import React from 'react'
-import { useRouter } from 'next/navigation'
+import { socket } from '@/socket';
+import React from 'react';
+import { useRouter } from 'next/navigation';
 
 const JoinRoom = () => {
-  const router = useRouter()
+  const router = useRouter();
 
   const handleFormSubmit = (event: any) => {
-    event.preventDefault()
-    const roomId = event.target.roomId.value
+    event.preventDefault();
+    const roomId = event.target.roomId.value;
 
-    router.push(`/room/${roomId}`)
-  }
+    router.push(`/room/${roomId}`);
+  };
 
   return (
     <div className="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-lg w-[50%]">
@@ -30,7 +30,7 @@ const JoinRoom = () => {
         </button>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default JoinRoom
+export default JoinRoom;
