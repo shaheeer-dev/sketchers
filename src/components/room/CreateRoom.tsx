@@ -1,16 +1,16 @@
-import React from 'react'
-import axios from 'axios'
-import { useRouter } from 'next/navigation'
-import JoinRoom from './JoinRoom'
+import React from 'react';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+import JoinRoom from './JoinRoom';
 
 const CreateRoom = () => {
-  const router = useRouter()
+  const router = useRouter();
 
   const createRoom = async () => {
-    const response = await axios.post('/api/rooms')
-    const roomId = response.data.roomId
-    router.push(`/room/${roomId}`)
-  }
+    const response = await axios.post('/api/rooms');
+    const roomId = response.data.roomId;
+    router.push(`/room/${roomId}`);
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-teal-400 to-blue-500">
@@ -23,7 +23,7 @@ const CreateRoom = () => {
       <p className='text-white py-4'>OR</p>
       <JoinRoom />
     </div>
-  )
-}
+  );
+};
 
-export default CreateRoom
+export default CreateRoom;

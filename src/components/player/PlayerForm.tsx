@@ -1,21 +1,21 @@
-import axios from 'axios'
-import React from 'react'
+import axios from 'axios';
+import React from 'react';
 
 const PlayerForm = ({ roomId, setPlayer }: { roomId: string, setPlayer: React.Dispatch<React.SetStateAction<boolean>> }) => {
-  const [playerName, setPlayerName] = React.useState<string>('')
+  const [playerName, setPlayerName] = React.useState<string>('');
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const name = playerName
-    const response = await axios.post('/api/players', { name, roomId })
-    localStorage.setItem('player', JSON.stringify(response.data.player))
-    localStorage.setItem('playerName', response.data.player.name)
-    setPlayer(true)
-  }
+    e.preventDefault();
+    const name = playerName;
+    const response = await axios.post('/api/players', { name, roomId });
+    localStorage.setItem('player', JSON.stringify(response.data.player));
+    localStorage.setItem('playerName', response.data.player.name);
+    setPlayer(true);
+  };
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPlayerName(e.target.value)
-  }
+    setPlayerName(e.target.value);
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-teal-400 to-blue-500">
@@ -37,7 +37,7 @@ const PlayerForm = ({ roomId, setPlayer }: { roomId: string, setPlayer: React.Di
         </button>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default PlayerForm
+export default PlayerForm;
