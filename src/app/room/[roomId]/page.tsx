@@ -5,7 +5,7 @@ import MainRoom from '@/components/room/MainRoom'
 import PlayerForm from '@/components/player/PlayerForm'
 import { useParams } from 'next/navigation'
 
-const page = () => {
+const Page = () => {
   const { userExists, loading, setUserExists } = useUserCheck()
   const { roomId }: { roomId: string } = useParams()
   
