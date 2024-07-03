@@ -1,35 +1,35 @@
 // components/Chat.tsx
-import React, { useEffect, useState } from 'react';
-import { socket } from '@/socket';
-import { useParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react'
+import { socket } from '@/socket'
+import { useParams } from 'next/navigation'
 
 const Chat = () => {
-  const [messages, setMessages] = useState<string[]>([]);
-  const [input, setInput] = useState<string>('');
-  const { roomId }: { roomId: string } = useParams();
+  const [messages, setMessages] = useState<string[]>([])
+  const [input, setInput] = useState<string>('')
+  const { roomId }: { roomId: string } = useParams()
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    socket.emit('send-message', { input, roomId });
-    setMessages((prevMessages) => [...prevMessages, input]);
-    setInput('');
-  };
+    e.preventDefault()
+    socket.emit('send-message', { input, roomId })
+    setMessages((prevMessages) => [...prevMessages, input])
+    setInput('')
+  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInput(e.target.value);
-  };
+    setInput(e.target.value)
+  }
 
   const updateMessages = (message: { input: string; roomId: string }) => {
-    setMessages((prevMessages) => [...prevMessages, message.input]);
-  };
+    setMessages((prevMessages) => [...prevMessages, message.input])
+  }
 
   useEffect(() => {
-    socket.on('receive-message', updateMessages);
+    socket.on('receive-message', updateMessages)
 
     return () => {
-      socket.off('receive-message', updateMessages);
-    };
-  }, []);
+      socket.off('receive-message', updateMessages)
+    }
+  }, [])
 
   return (
     <div className="flex flex-col h-full bg-white shadow-lg rounded-lg overflow-hidden">
@@ -59,7 +59,7 @@ const Chat = () => {
         </button>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default Chat;
+export default Chat
