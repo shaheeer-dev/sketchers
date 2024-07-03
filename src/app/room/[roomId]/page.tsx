@@ -6,7 +6,7 @@ import PlayerForm from '@/components/player/PlayerForm'
 import { useParams } from 'next/navigation'
 
 const page = () => {
-  const { userExists, loading, setUserExists } = useUserCheck();
+  const { userExists, loading, setUserExists } = useUserCheck()
   const { roomId }: { roomId: string } = useParams()
   
   if(loading) {

@@ -3,31 +3,31 @@ import { Editor, TLShape, Tldraw } from 'tldraw'
 import CustomToolbar from '../toolbar/CustomToolbar'
 import { socket } from '@/socket'
 import { useParams } from 'next/navigation'
-import { Resizable } from 're-resizable';
+import { Resizable } from 're-resizable'
 
 const SketchBoard = () => {
-  const editorRef = useRef<Editor | null>(null);
-  const { roomId }: { roomId: string } = useParams();
+  const editorRef = useRef<Editor | null>(null)
+  const { roomId }: { roomId: string } = useParams()
   // const playerName = localStorage.getItem('player')
-  const [playerName, setPlayerName] = useState<string>(() => localStorage.getItem('playerName') || '');
+  const [playerName, setPlayerName] = useState<string>(() => localStorage.getItem('playerName') || '')
   const handleShapeChange = () => {
-    const editor = editorRef.current;
+    const editor = editorRef.current
     //  TODO - get player name whose current turn
     if (editor &&  playerName === 'Shaheer') {
-      const shapes = editor.getCurrentPageShapes();
-      socket.emit('drawing', {shapes, roomId, player: playerName});
+      const shapes = editor.getCurrentPageShapes()
+      socket.emit('drawing', {shapes, roomId, player: playerName})
     }
   }
 
   const drawShapes = (data: any) => {
-    const editor = editorRef.current;
+    const editor = editorRef.current
     if (editor) {
-      editor.createShapes(data.shapes);
+      editor.createShapes(data.shapes)
     }
   }
 
   const receiveDrawing = (data: { shapes: TLShape[], player: string }) => {
-    drawShapes(data);
+    drawShapes(data)
   }
 
   const clearAll = () => {
