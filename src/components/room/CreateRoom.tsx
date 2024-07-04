@@ -1,7 +1,8 @@
-import React from 'react'
+'use client'
+
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
-import JoinRoom from './JoinRoom'
+import JoinRoom from '@/components/room/JoinRoom'
 
 const CreateRoom = () => {
   const router = useRouter()

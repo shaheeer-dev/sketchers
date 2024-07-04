@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Editor, TLShape, Tldraw } from 'tldraw'
-import CustomToolbar from '../toolbar/CustomToolbar'
+import CustomToolbar from '@/components/toolbar/CustomToolbar'
 import { socket } from '@/socket'
-import { useParams } from 'next/navigation'
-import { Resizable } from 're-resizable'
 import { Player, Room } from '@prisma/client'
 import useUserCheck from '@/hooks/useUserCheck'
 
@@ -19,7 +17,7 @@ const SketchBoard = ({room}: {room: Room}) => {
     }
   }
 
-  const drawShapes = (data: any) => {
+  const drawShapes = (data: { shapes: TLShape[], player: string }) => {
     const editor = editorRef.current
     if (editor) {
       editor.createShapes(data.shapes)

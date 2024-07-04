@@ -1,11 +1,9 @@
-'use client'
 import SketchBoard from '@/components/board/SketchBoard'
-import React from 'react'
 
-const page = () => {
+const Page = () => {
   return (
     <SketchBoard />
   )
 }
 
-export default page
+export default Page
