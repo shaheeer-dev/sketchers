@@ -26,8 +26,8 @@ app.prepare().then(() => {
       socket.to(roomId).emit("receive-drawing", { shapes, player });
     })
 
-    socket.on("remove-all", (roomId) => {
-      socket.to(roomId).emit("clear", roomId);
+    socket.on("remove-all", ({roomId, player}) => {
+      socket.to(roomId).emit("clear", player);
     })
 
     socket.on('send-message', ({input, roomId}) => {

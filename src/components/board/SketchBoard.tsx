@@ -4,18 +4,18 @@ import CustomToolbar from '../toolbar/CustomToolbar'
 import { socket } from '@/socket'
 import { useParams } from 'next/navigation'
 import { Resizable } from 're-resizable'
+import { Player, Room } from '@prisma/client'
+import useUserCheck from '@/hooks/useUserCheck'
 
-const SketchBoard = () => {
+const SketchBoard = ({room}: {room: Room}) => {
   const editorRef = useRef<Editor | null>(null)
-  const { roomId }: { roomId: string } = useParams()
-  // const playerName = localStorage.getItem('player')
-  const [playerName, setPlayerName] = useState<string>(() => localStorage.getItem('playerName') || '')
+  const { player } = useUserCheck()
   const handleShapeChange = () => {
     const editor = editorRef.current
-    //  TODO - get player name whose current turn
-    if (editor &&  playerName === 'Shaheer') {
+
+    if (editor &&  player?.id === room.currentPlayerId) {
       const shapes = editor.getCurrentPageShapes()
-      socket.emit('drawing', {shapes, roomId, player: playerName})
+      socket.emit('drawing', {shapes, roomId: room.id, player: player?.name})
     }
   }
 
@@ -30,18 +30,21 @@ const SketchBoard = () => {
     drawShapes(data)
   }
 
-  const clearAll = () => {
+  const clearAll = (player: Player) => {
     const editor = editorRef.current
     if (editor) {
       editor.deleteShapes(editor.getCurrentPageShapes())
     }
   }
 
+  const removeShapes = () => {
+    if(player?.id === room.currentPlayerId) socket.emit('remove-all', {roomId: room.id, player: player?.name})
+  }
 
   useEffect(() => {
     socket.on('receive-drawing', receiveDrawing)
     socket.on('clear', clearAll)
-    socket.emit('join-room', roomId)
+    socket.emit('join-room', room.id)
 
     // Cleanup on unmount
     return () => {
@@ -55,6 +58,7 @@ const SketchBoard = () => {
       <div className="h-[90%] mx-auto">
         <Tldraw
           forceMobile
+          hideUi={player?.id !== room.currentPlayerId}
           components={{
             PageMenu: null,
             MainMenu: null,
@@ -62,12 +66,13 @@ const SketchBoard = () => {
             ActionsMenu: null,
             MenuPanel: null, 
             QuickActions: null,
-            Toolbar: () => CustomToolbar(roomId),
+            Toolbar: () => <CustomToolbar onClick={() => removeShapes()} />
           }
           }
           cameraOptions={{isLocked: true}}
           onMount={(editor) => { 
             editorRef.current = editor
+            // editor.updateInstanceState({ isReadonly: !(player?.id === room.currentPlayerId) })
             editor.addListener('change', handleShapeChange)
           }}
         />

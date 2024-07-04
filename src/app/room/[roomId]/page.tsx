@@ -1,25 +1,19 @@
-'use client'
-import React, { useEffect } from 'react'
-import useUserCheck from '@/hooks/useUserCheck'
-import MainRoom from '@/components/room/MainRoom'
-import PlayerForm from '@/components/player/PlayerForm'
-import { useParams } from 'next/navigation'
+import RoomPage from '@/components/room/RoomPage'
+import db from '@/utils/PrismaClient'
+import { redirect } from 'next/navigation'
 
-const RoomShow = () => {
-  const { userExists, loading, setUserExists } = useUserCheck()
-  const { roomId }: { roomId: string } = useParams()
-  
-  if(loading) {
-    return (
-      <div>Loading...</div>
-    )
+const page = async ({ params }: { params: { roomId: string } }) => {
+  const { roomId } = params
+
+  const room = await db.room.findUnique({ where: { id: roomId } })
+
+  if (!room) {
+    redirect('/room')
   }
 
   return (
-    <>
-      { userExists ? <MainRoom /> : <PlayerForm  roomId={roomId} setPlayer={setUserExists}/> }
-    </>
+    <RoomPage room={room} />
   )
 }
 
-export default RoomShow
+export default page
