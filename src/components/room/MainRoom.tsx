@@ -13,25 +13,36 @@ import Countdown from 'react-countdown'
 const MainRoom = ({ room }: { room: Room }) => {
   const [started, setStarted] = useState(false)
   const { player, setUserExists } = useUserCheck()
-
-  const handleStartGame = () => {
-    setStarted(true)
-    // Update database
-    // Socket
-  }
-
-  useEffect(() => {
-    socket.emit('join-room', room.id)
-  }, [])
-
   const router = useRouter()
 
+  useEffect(() => {
+    if (player) {
+      socket.emit('join-room', room.id)
+      window.addEventListener('unload', handleWindowUnload)
+    }
+
+    return () => {
+      if (player) {
+        window.removeEventListener('unload', handleWindowUnload)
+      }
+    }
+  }, [player])
+
+  const handleWindowUnload = () => processLeaveRoom()
+  const handleStartGame = () => setStarted(true)
+  // Update database
+  // Socket
+
   const handleLeaveGame = () => {
-    socket.emit('leave-room', {player, roomId: room.id})
     setUserExists(false)
+    processLeaveRoom()
+    router.push('/')
+  }
+
+  const processLeaveRoom = () => {
+    socket.emit('leave-room', {player, roomId: room.id})
     localStorage.removeItem('player')
     localStorage.removeItem('playerName')
-    router.push('/room')
   }
 
   return (
@@ -43,7 +54,7 @@ const MainRoom = ({ room }: { room: Room }) => {
         <div className="w-1/4 p-4">
           <PlayersList room={room}/>
         </div>
-      
+
         <div className="flex-grow p-4">
           <SketchBoard  room={room}/>
 

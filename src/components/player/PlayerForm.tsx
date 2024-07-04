@@ -1,8 +1,9 @@
+'use client'
 import axios from 'axios'
-import React from 'react'
+import { useState } from 'react'
 
 const PlayerForm = ({ roomId, setPlayer }: { roomId: string, setPlayer: React.Dispatch<React.SetStateAction<boolean>> }) => {
-  const [playerName, setPlayerName] = React.useState<string>('')
+  const [playerName, setPlayerName] = useState<string>('')
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
