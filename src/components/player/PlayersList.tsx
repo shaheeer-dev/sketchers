@@ -17,7 +17,6 @@ const PlayersList = ({room}: {room: Room}) => {
 
   const handleRemovePlayer = async (player: Player) => {
     if(player){
-      const response = await axios.delete(`/api/players/${player.id}`)
       setIsPlayerListUpdated(true)
     }
   }

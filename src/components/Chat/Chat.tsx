@@ -2,16 +2,23 @@
 import React, { useEffect, useState } from 'react'
 import { socket } from '@/socket'
 import { useParams } from 'next/navigation'
+import { Player } from '@prisma/client'
 
-const Chat = () => {
-  const [messages, setMessages] = useState<string[]>([])
+type MessageListProp = {
+  username: string;
+  message: string;
+  playerId: number;
+};
+
+const Chat = ({ player }: { player: Player }) => {
+  const [messageList, setMessageList] = useState<MessageListProp[]>([])
   const [input, setInput] = useState<string>('')
   const { roomId }: { roomId: string } = useParams()
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    socket.emit('send-message', { input, roomId })
-    setMessages((prevMessages) => [...prevMessages, input])
+    socket.emit('send-message', { input, roomId, player })
+    setMessageList((prevMessages) => [...prevMessages, {message: input, playerId: player.id, username: player.name} as MessageListProp])
     setInput('')
   }
 
@@ -19,8 +26,8 @@ const Chat = () => {
     setInput(e.target.value)
   }
 
-  const updateMessages = (message: { input: string; roomId: string }) => {
-    setMessages((prevMessages) => [...prevMessages, message.input])
+  const updateMessages = (message: { input: string; roomId: string, player: Player }) => {
+    setMessageList((prevMessages) => [...prevMessages, {message: message.input, playerId: message.player.id, username: message.player.name}])
   }
 
   useEffect(() => {
@@ -34,10 +41,13 @@ const Chat = () => {
   return (
     <div className="flex flex-col h-full bg-white shadow-lg rounded-lg overflow-hidden">
       <div className="flex flex-col flex-grow p-4 overflow-auto">
-        {messages.map((message, index) => (
+        {messageList.map((data, index) => (
           <div key={index} className="mb-2">
+            <sub>
+              {data.username}
+            </sub>
             <div className="bg-blue-500 text-white p-2 rounded-lg max-w-xs break-words">
-              {message}
+              {data.message}
             </div>
           </div>
         ))}
