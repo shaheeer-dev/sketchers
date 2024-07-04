@@ -5,7 +5,7 @@ import SketchBoard from '../board/SketchBoard'
 import PlayersList from '../player/PlayersList'
 import Chat from '../Chat/Chat'
 import { socket } from '@/socket'
-import { useParams, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import useUserCheck from '@/hooks/useUserCheck'
 import { Room } from '@prisma/client'
 import Countdown from 'react-countdown'
@@ -77,7 +77,7 @@ const MainRoom = ({ room }: { room: Room }) => {
           </div>
         </div>
         <div className="w-1/4 p-4">
-          <Chat />
+          <Chat player={player}/>
         </div>
       </div>
     </>

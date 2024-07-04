@@ -1,7 +1,8 @@
-const { createServer } = require('http');
-const { parse } = require('url');
-const next = require('next');
-const { Server } = require('socket.io')
+import { createServer } from 'http';
+import { parse } from 'url';
+import next from 'next';
+import { Server } from 'socket.io';
+import axios from 'axios';
 
 const app = next({ dev:  process.env.NODE_ENV !== 'production' })
 const handle = app.getRequestHandler();
@@ -30,11 +31,12 @@ app.prepare().then(() => {
       socket.to(roomId).emit("clear", player);
     })
 
-    socket.on('send-message', ({input, roomId}) => {
-      socket.to(roomId).emit('receive-message', {input, roomId});
+    socket.on('send-message', ({input, roomId, player}) => {
+      socket.to(roomId).emit('receive-message', {input, roomId, player});
     })
 
-    socket.on('leave-room', ({roomId, player}) => {
+    socket.on('leave-room', async ({roomId, player}) => {
+      await axios.delete(`http://localhost:3000/api/players/${player.id}`)
       socket.to(roomId).emit('player-left', player)
     }) 
 

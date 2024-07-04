@@ -4,7 +4,14 @@ import { useState, useEffect } from 'react'
 const useUserCheck = () => {
   const [userExists, setUserExists] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(true)
-  const [player, setPlayer] = useState<Player>()
+  const [player, setPlayer] = useState<Player>({
+    id: 0,
+    name: '',
+    roomId: '',
+    score: 0,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  })
 
   useEffect(() => {
     try {
