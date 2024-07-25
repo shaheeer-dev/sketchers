@@ -15,8 +15,7 @@ export const POST = async (req: NextRequest) => {
   const player = await db.player.create({ data: { name, roomId } })
 
   if (!room.currentPlayerId) {
-    console.log('setting player as current player')
-    await db.room.update({ where: { id: roomId }, data: { currentPlayerId: player.id } })
+    await db.room.update({ where: { id: roomId }, data: { currentPlayerId: player.id, roomOwnerId: player.id } })
   }
 
   return NextResponse.json({

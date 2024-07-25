@@ -5,14 +5,15 @@ import { redirect } from 'next/navigation'
 const page = async ({ params }: { params: { roomId: string } }) => {
   const { roomId } = params
 
-  const room = await db.room.findUnique({ where: { id: roomId } })
+  const room = await db.room.findUnique({ where: { id: roomId }, include: { players: { orderBy: { id: 'asc' } } }})
+
 
   if (!room) {
-    redirect('/room')
+    redirect('/')
   }
 
   return (
-    <RoomPage room={room} />
+    <RoomPage room={room} players={room.players}/>
   )
 }
 

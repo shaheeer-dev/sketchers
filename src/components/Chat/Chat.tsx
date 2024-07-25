@@ -5,9 +5,10 @@ import { useParams } from 'next/navigation'
 import { Player } from '@prisma/client'
 
 type MessageListProp = {
-  username: string;
+  playerName: string;
   message: string;
   playerId: number;
+  isWordGuessed: boolean;
 };
 
 const Chat = ({ player }: { player: Player }) => {
@@ -18,7 +19,7 @@ const Chat = ({ player }: { player: Player }) => {
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     socket.emit('send-message', { input, roomId, player })
-    setMessageList((prevMessages) => [...prevMessages, {message: input, playerId: player.id, username: player.name} as MessageListProp])
+    setMessageList((prevMessages) => [...prevMessages, {message: input, playerId: player.id, playerName: player.name} as MessageListProp])
     setInput('')
   }
 
@@ -26,15 +27,21 @@ const Chat = ({ player }: { player: Player }) => {
     setInput(e.target.value)
   }
 
-  const updateMessages = (message: { input: string; roomId: string, player: Player }) => {
-    setMessageList((prevMessages) => [...prevMessages, {message: message.input, playerId: message.player.id, username: message.player.name}])
+  const updateMessages = (message: { input: string; roomId: string, player: Player, isWordGuessed: boolean }) => {
+    setMessageList((prevMessages) => [...prevMessages, {message: message.input, playerId: message.player.id, playerName: message.player.name, isWordGuessed: message.isWordGuessed}])
+  }
+
+  const handleWordGuessed = (message: {player: Player, isWordGuessed: boolean}) => {
+    setMessageList((prevMessages) => [...prevMessages, {message: `${message.player.name} guessed the word!`, playerId: message.player.id, playerName: message.player.name, isWordGuessed: message.isWordGuessed}])
   }
 
   useEffect(() => {
     socket.on('receive-message', updateMessages)
+    socket.on('word-guessed', handleWordGuessed)
 
     return () => {
       socket.off('receive-message', updateMessages)
+      socket.off('word-guessed', handleWordGuessed)
     }
   }, [])
 
@@ -43,12 +50,24 @@ const Chat = ({ player }: { player: Player }) => {
       <div className="flex flex-col flex-grow p-4 overflow-auto">
         {messageList.map((data, index) => (
           <div key={index} className="mb-2">
-            <sub>
-              {data.username}
-            </sub>
-            <div className="bg-blue-500 text-white p-2 rounded-lg max-w-xs break-words">
-              {data.message}
-            </div>
+            {
+              data.isWordGuessed ? (
+                <>
+                  <div className="text-green-500 p-2 rounded-lg max-w-xs break-words">
+                    {`${data.playerName} guessed the word!`}
+                  </div>
+                </>
+              ) : (
+              <>
+                <sub>
+                  {data.playerName}
+                </sub>
+                <div className="bg-blue-500 text-white p-2 rounded-lg max-w-xs break-words">
+                  {data.message}
+                </div>
+              </>
+              )
+            }
           </div>
         ))}
       </div>

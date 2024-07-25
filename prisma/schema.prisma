@@ -20,6 +20,7 @@ model Room {
   isStarted       Boolean    @default(false)
   players         Player[]
   currentPlayerId Int   @default(0)
+  roomOwnerId       Int   @default(0)
 }
 
 model Player {

@@ -1,15 +1,14 @@
 'use client'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { socket } from '@/socket'
 import { Player, Room } from '@prisma/client'
 import useUserCheck from '@/hooks/useUserCheck'
 
-const PlayersList = ({room}: {room: Room}) => {
-  console.log('Room ->>>', room)
-  const [players, setPlayers] = React.useState<Player[]>([])
-  const [isPlayerListUpdated, setIsPlayerListUpdated] = React.useState(true)
-  const { player: currentPlayer } = useUserCheck()
+const PlayersList = (props: {room: Room, players: Player[], setPlayers: React.Dispatch<React.SetStateAction<Player[]>>, setIsStarted: React.Dispatch<React.SetStateAction<boolean>>, currentPlayerId: number}) => {
+  const {room, players, setPlayers, setIsStarted, currentPlayerId} = props
+  const [isPlayerListUpdated, setIsPlayerListUpdated] = useState(true)
+  const { player: currentPlayer } = useUserCheck();
 
   const handleNewPlayerJoined = () => {
     setIsPlayerListUpdated(true)
@@ -28,6 +27,7 @@ const PlayersList = ({room}: {room: Room}) => {
       const data = response.data
       
       setPlayers(data.room.players)
+      setIsStarted(data.room.players.length > 1)
       setIsPlayerListUpdated(false)
     }
     if (isPlayerListUpdated) fetchPlayers()
@@ -47,7 +47,7 @@ const PlayersList = ({room}: {room: Room}) => {
       <h2 className="text-xl font-bold mb-4">Players List</h2>
 
       {players && (players.map((player) => (
-        <div key={player.id} className={`${ player.id === room.currentPlayerId ? 'bg-blue-500 text-white' : 'bg-gray-200' } p-2 rounded mb-2`}>{player.name} { currentPlayer?.id === player?.id ? '(You)' : '' }</div>
+        <div key={player.id} className={`${ player.id === currentPlayerId ? 'bg-blue-500 text-white' : 'bg-gray-200' } p-2 rounded mb-2`}>{player.name} { currentPlayer?.id === player?.id ? '(You)' : '' }</div>
       )))}
     </div>
   )

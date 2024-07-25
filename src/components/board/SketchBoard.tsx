@@ -1,19 +1,19 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Editor, TLShape, Tldraw } from 'tldraw'
 import CustomToolbar from '@/components/toolbar/CustomToolbar'
 import { socket } from '@/socket'
 import { Player, Room } from '@prisma/client'
 import useUserCheck from '@/hooks/useUserCheck'
 
-const SketchBoard = ({room}: {room: Room}) => {
+const SketchBoard = ({roomId, isStarted, currentTurnPlayerId}: {roomId: string, isStarted: boolean, currentTurnPlayerId: number}) => {
   const editorRef = useRef<Editor | null>(null)
   const { player } = useUserCheck()
   const handleShapeChange = () => {
     const editor = editorRef.current
 
-    if (editor &&  player?.id === room.currentPlayerId) {
+    if (editor &&  player?.id === currentTurnPlayerId) {
       const shapes = editor.getCurrentPageShapes()
-      socket.emit('drawing', {shapes, roomId: room.id, player: player?.name})
+      socket.emit('drawing', {shapes, roomId, player: player?.name})
     }
   }
 
@@ -28,7 +28,7 @@ const SketchBoard = ({room}: {room: Room}) => {
     drawShapes(data)
   }
 
-  const clearAll = (player: Player) => {
+  const clearAll = () => {
     const editor = editorRef.current
     if (editor) {
       editor.deleteShapes(editor.getCurrentPageShapes())
@@ -36,27 +36,33 @@ const SketchBoard = ({room}: {room: Room}) => {
   }
 
   const removeShapes = () => {
-    if(player?.id === room.currentPlayerId) socket.emit('remove-all', {roomId: room.id, player: player?.name})
+    if(player?.id === currentTurnPlayerId) socket.emit('remove-all', {roomId, player: player?.name})
   }
 
   useEffect(() => {
     socket.on('receive-drawing', receiveDrawing)
     socket.on('clear', clearAll)
-    socket.emit('join-room', room.id)
+    socket.emit('join-room', roomId)
 
     // Cleanup on unmount
     return () => {
       socket.off('receive-drawing', receiveDrawing)
       socket.off('clear', clearAll)
+      clearAll();
+
     }
   }, [])
+
+  useEffect(() => {
+    clearAll();
+  }, [isStarted])
 
   return (
     <>
       <div className="h-[90%] mx-auto">
         <Tldraw
           forceMobile
-          hideUi={player?.id !== room.currentPlayerId}
+          hideUi={player.id !== currentTurnPlayerId || !isStarted}
           components={{
             PageMenu: null,
             MainMenu: null,
@@ -70,7 +76,6 @@ const SketchBoard = ({room}: {room: Room}) => {
           cameraOptions={{isLocked: true}}
           onMount={(editor) => { 
             editorRef.current = editor
-            // editor.updateInstanceState({ isReadonly: !(player?.id === room.currentPlayerId) })
             editor.addListener('change', handleShapeChange)
           }}
         />
