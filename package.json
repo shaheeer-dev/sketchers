@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node websocket-server.js",
+    "dev": "bun run websocket-server.ts",
     "build": "next build",
-    "start": "NODE_ENV=production node websocket-server.js",
+    "start": "NODE_ENV=production node dist/websocket-server.js",
     "lint": "next lint",
     "lint:fix": "next lint --fix"
   },

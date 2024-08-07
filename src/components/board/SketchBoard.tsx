@@ -42,7 +42,6 @@ const SketchBoard = ({roomId, isStarted, currentTurnPlayerId}: {roomId: string, 
   useEffect(() => {
     socket.on('receive-drawing', receiveDrawing)
     socket.on('clear', clearAll)
-    socket.emit('join-room', roomId)
 
     // Cleanup on unmount
     return () => {

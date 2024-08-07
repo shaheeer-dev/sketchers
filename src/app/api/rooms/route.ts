@@ -6,7 +6,7 @@ export const POST = async (request: NextRequest) => {
   try {
     const room = await db.room.create({ data: {} })
     return NextResponse.json({ roomId: room.id, message: 'Room created successfully' }, {status: 201})
-  } catch (error) {
-    return NextResponse.json({message: 'Error creating room'}, {status: 500})
+  } catch (error: any) {
+    return NextResponse.json({message: error.message}, {status: 500})
   }
 }

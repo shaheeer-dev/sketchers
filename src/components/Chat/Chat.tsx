@@ -11,14 +11,14 @@ type MessageListProp = {
   isWordGuessed: boolean;
 };
 
-const Chat = ({ player }: { player: Player }) => {
+const Chat = ({ player, currentTurnPlayerId }: { player: Player, currentTurnPlayerId: number }) => {
   const [messageList, setMessageList] = useState<MessageListProp[]>([])
   const [input, setInput] = useState<string>('')
   const { roomId }: { roomId: string } = useParams()
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    socket.emit('send-message', { input, roomId, player })
+    socket.emit('send-message', { input, roomId, player, currentTurnPlayerId })
     setMessageList((prevMessages) => [...prevMessages, {message: input, playerId: player.id, playerName: player.name} as MessageListProp])
     setInput('')
   }

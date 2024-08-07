@@ -11,6 +11,10 @@ const drawableWords = [
   "Mushroom", "Flower", "Garden", "Path", "Swing", "Slide", "Sandbox", "Playground", "Kite", "Balloon"
 ];
 
+// const drawableWords = [
+//   { word: "Apple", similar: ["Apples", "Ample", ""] },
+// ]
+
 export const getWord = () => {
   const randomWord = drawableWords[Math.floor(Math.random() * drawableWords.length)]
   return randomWord;
