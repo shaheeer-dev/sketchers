@@ -5,7 +5,7 @@ const GUESSING_MULTIPLIER = 10
 const DRAWING_BASE_MULTIPLIER = 2
 
 type CalculateScoreParams = {
-  startsAt: Date,
+  startsAt: Date | null,
   totalPlayers: number,
   currentGuessedPlayers: string[],
   player: Player,

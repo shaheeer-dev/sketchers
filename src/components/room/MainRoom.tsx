@@ -10,22 +10,39 @@ import { Player, Room } from '@prisma/client'
 import Countdown from '@/components/countDown/Countdown'
 import { getWord } from '@/utils/drawableWords'
 import DisplayWordModal from '@/components/modal/DisplayWordModal'
+import { getRoomById } from '@/../services/apiService'
 
-const MainRoom = ({ room, players }: { room: Room, players: Player[] }) => {
+const MainRoom = ({ room: initialRoom, players: initialPlayers }: { room: Room, players: Player[] }) => {
   const [isStarted, setIsStarted] = useState(false)
   const [drawableWord, setDrawableWord] = useState<string>('')
   const [wordCount, setWordCount] = useState<number>(0)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const { player, setUserExists } = useUserCheck()
-  const [ playersList, setPlayersList ] = useState(players)
   const [playerScores, setPlayerScores] = useState<Record<string, number>>({})
+  const [players, setPlayers] = useState(initialPlayers)
+  const [room, setRoom] = useState(initialRoom)
+  const { player, setUserExists } = useUserCheck(room.id)
 
   const [currentTurnPlayerName, setCurrentTurnPlayerName] = useState('')
   const [currentTurnPlayerId, setCurrentTurnPlayerId] = useState(room.currentPlayerId)
 
   const router = useRouter()
 
-  const canStartGame = playersList.length > 1 && room.roomOwnerId === player.id
+  useEffect(() => {
+    const fetchLatestRoom = async () => {
+      try {
+        const response = await getRoomById(room.id)
+        const latestRoom = response.data
+        setRoom(latestRoom)
+        setPlayers(latestRoom.players)
+      } catch (error) {
+        console.error('Error fetching room:', error)
+      }
+    }
+
+    fetchLatestRoom()
+  }, [])
+
+  const canStartGame = players.length > 1 && room.roomOwnerId === player.id
   const isCountdownStarted = player.id === currentTurnPlayerId && isStarted
 
   useEffect(() => {
@@ -53,14 +70,14 @@ const MainRoom = ({ room, players }: { room: Room, players: Player[] }) => {
 
   const handleScores = (scores: Record<string, number>) => {
     setPlayerScores((prev) => {
-      const newScores = { ...prev };
+      const newScores = { ...prev }
       Object.keys(scores).map((key) => newScores[key] = (newScores[key] || 0) + Number(scores[key]))
-      return newScores;
+      return newScores
     })
   }
 
   const handleCurrentPlayerTurn = (currentPlayerTurn: Player) => {
-    if(players.length <= 1){
+    if(initialPlayers.length <= 1){
       setIsStarted(false)
       return
     }
@@ -69,11 +86,11 @@ const MainRoom = ({ room, players }: { room: Room, players: Player[] }) => {
     setIsModalOpen(false)
     setIsStarted(true)
     const playerName = getCurrentPlayerName(currentPlayerTurn.id)
-   if (player.id === currentPlayerTurn.id) {
-      const word = getWord();
+    if (player.id === currentPlayerTurn.id) {
+      const word = getWord()
       setDrawableWord(word)
-      socket.emit('start-game', {wordToDraw: word, roomId: room.id, playerName: playerName, totalPlayers: playersList.length})
-   }
+      socket.emit('start-game', {wordToDraw: word, roomId: room.id, playerName: playerName, totalPlayers: players.length})
+    }
   }
   const handleSetStarted = ({ wordCount: wC, playerName }: { wordCount: number, playerName: string }) => {
     setIsStarted(true)
@@ -91,14 +108,14 @@ const MainRoom = ({ room, players }: { room: Room, players: Player[] }) => {
 
   const handleStartGame = () => {
     setIsStarted(true)
-    const word = getWord();
+    const word = getWord()
     setDrawableWord(word)
     const playerName = getCurrentPlayerName(currentTurnPlayerId)
-    socket.emit('start-game', {wordToDraw: word, roomId: room.id, playerName: playerName, totalPlayers: playersList.length })
+    socket.emit('start-game', {wordToDraw: word, roomId: room.id, playerName: playerName, totalPlayers: players.length })
   }
 
   const getCurrentPlayerName = (playerId: number) => {
-    const CurrentPlayer = playersList.find((p) => p.id === playerId)
+    const CurrentPlayer = players.find((p) => p.id === playerId)
     if (CurrentPlayer) {
       console.log('Current Player name', CurrentPlayer.name)
       setCurrentTurnPlayerName(CurrentPlayer.name)
@@ -122,8 +139,8 @@ const MainRoom = ({ room, players }: { room: Room, players: Player[] }) => {
 
   return (
     <>
-    {
-      isStarted 
+      {
+        isStarted 
       &&
       <div>
         <div>
@@ -131,19 +148,19 @@ const MainRoom = ({ room, players }: { room: Room, players: Player[] }) => {
         </div>
         <div className='text-center'>
           <p>{ player.id !== currentTurnPlayerId ? new Array(wordCount).fill('_').join(' ') : drawableWord}</p>
-            <Countdown 
-              isCountdownStarted={isCountdownStarted} 
-              roomId={room.id} 
-              currentPlayerId={currentTurnPlayerId}
-              countDownLimit={15}
-              onTimeUp={() => handleTimeOut(drawableWord)} 
-            />
+          <Countdown 
+            isCountdownStarted={isCountdownStarted} 
+            roomId={room.id} 
+            currentPlayerId={currentTurnPlayerId}
+            countDownLimit={15}
+            onTimeUp={() => handleTimeOut(drawableWord)} 
+          />
         </div>
       </div> 
-    }
+      }
       <div className="flex h-screen bg-gray-200">
         <div className="w-1/4 p-4">
-          <PlayersList room={room} players={playersList} setPlayers={setPlayersList} setIsStarted={setIsStarted} currentPlayerId={currentTurnPlayerId} playerScores={playerScores}/>
+          <PlayersList room={room} players={players} setPlayers={setPlayers} setIsStarted={setIsStarted} currentPlayerId={currentTurnPlayerId} playerScores={playerScores}/>
         </div>
 
         <div className="flex-grow p-4 z-0">
@@ -180,7 +197,7 @@ const MainRoom = ({ room, players }: { room: Room, players: Player[] }) => {
       </div>
       {        
         drawableWord &&
-          <DisplayWordModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} word={drawableWord}  players={playersList} playerScores={playerScores} />
+          <DisplayWordModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} word={drawableWord}  players={players} playerScores={playerScores} />
       }
     </>
   )

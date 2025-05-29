@@ -3,6 +3,7 @@
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import JoinRoom from '@/components/room/JoinRoom'
+import { socket } from '@/socket'
 
 const CreateRoom = () => {
   const router = useRouter()
@@ -10,6 +11,7 @@ const CreateRoom = () => {
   const createRoom = async () => {
     const response = await axios.post('/api/rooms')
     const roomId = response.data.roomId
+    socket.emit('create-room', roomId)
     router.push(`/room/${roomId}`)
   }
 
