@@ -11,6 +11,7 @@ import Countdown from '@/components/countDown/Countdown'
 import { getWord } from '@/utils/drawableWords'
 import DisplayWordModal from '@/components/modal/DisplayWordModal'
 import { getRoomById } from '@/../services/apiService'
+import RoomInviteBar from './RoomInviteBar'
 
 const MainRoom = ({ room: initialRoom, players: initialPlayers }: { room: Room, players: Player[] }) => {
   const [isStarted, setIsStarted] = useState(false)
@@ -162,6 +163,7 @@ const MainRoom = ({ room: initialRoom, players: initialPlayers }: { room: Room, 
         </div>
 
         <div className="flex-grow p-4 z-0">
+          <RoomInviteBar />
           <SketchBoard  roomId={room.id} isStarted={isStarted} currentTurnPlayerId={currentTurnPlayerId}/>
 
           <div className='text-center'>
