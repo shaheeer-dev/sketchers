@@ -10,12 +10,12 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
 
   try {
     const room = await db.room.findUnique(
-      { 
-        where: { id }, 
-        include: { players: true } 
+      {
+        where: { id },
+        include: { players: true }
       }
     )
-    
+
     return NextResponse.json({room}, {status: 200})
   } catch (error) {
     return NextResponse.json({message: 'Error fetching room'}, {status: 500})

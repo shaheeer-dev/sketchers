@@ -1,6 +1,5 @@
 import React from 'react'
 import { DefaultToolbar, TldrawUiMenuItem, useEditor, useTools } from 'tldraw'
-import { socket } from '@/socket'
 
 const CustomToolbar = ({ onClick }: { onClick: () => void }) => {
   const editor = useEditor()

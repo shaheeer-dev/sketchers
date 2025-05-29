@@ -12,7 +12,7 @@ const Countdown = (props: { isCountdownStarted: boolean, roomId: string, countDo
 
     if (isCountdownStarted) {
       interval = setInterval(() => {
-        setTimeLeft((prevTimeLeft) => { 
+        setTimeLeft((prevTimeLeft) => {
           const remainingLeft = Math.max(prevTimeLeft - 1, 0)
           if (remainingLeft === 0) {
             socket.emit('time-up', { roomId, currentPlayerId })

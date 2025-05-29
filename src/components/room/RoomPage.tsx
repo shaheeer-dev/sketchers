@@ -6,7 +6,7 @@ import { Player, Room } from '@prisma/client'
 
 const RoomPage = ({ room, players }: { room: Room, players: Player[] }) => {
   const { userExists, loading, setUserExists } = useUserCheck(room.id)
-  
+
   if(loading) {
     return (
       <div>Loading...</div>
@@ -15,10 +15,10 @@ const RoomPage = ({ room, players }: { room: Room, players: Player[] }) => {
 
   return (
     <>
-      { 
-        userExists ? 
-          <MainRoom room={room} players={players}/> 
-          : 
+      {
+        userExists ?
+          <MainRoom room={room} players={players}/>
+          :
           <PlayerForm  roomId={room.id} setPlayer={setUserExists}/> }
     </>
   )

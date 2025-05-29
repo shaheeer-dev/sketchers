@@ -1,6 +1,5 @@
 import db from '@/utils/PrismaClient'
 import { Player } from '@prisma/client'
-import { request } from 'http'
 import { NextRequest, NextResponse } from 'next/server'
 
 export const PUT = async (request: NextRequest, { params }: {params: { id: string }}) => {
@@ -22,5 +21,4 @@ export const PUT = async (request: NextRequest, { params }: {params: { id: strin
     return NextResponse.json({message: 'Something went wrong! unable to change player turn'}, {status: 500})
   }
 }
-
 

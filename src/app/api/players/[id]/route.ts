@@ -3,7 +3,7 @@ import db from '@/utils/PrismaClient'
 
 export const DELETE = async (request: NextRequest, { params }: { params: { id: string} }) => {
   const { id } = params
-  
+
   if(!id) {
     return NextResponse.json({message: 'Player ID is required'}, {status: 400})
   }
@@ -14,7 +14,7 @@ export const DELETE = async (request: NextRequest, { params }: { params: { id: s
   } catch (error) {
     return NextResponse.json({message: 'Error deleting player'}, {status: 500})
   }
-  
+
 }
 
 export const PUT = async (request: NextRequest, { params }: { params: { id: string} }) => {
@@ -26,7 +26,7 @@ export const PUT = async (request: NextRequest, { params }: { params: { id: stri
 
   const body = await request.json()
   const data = body.data
-  
+
   if(!data || Object.keys(data).length === 0) {
     return NextResponse.json({message: 'No data provided to update'}, {status: 400})
   }
