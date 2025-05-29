@@ -24,9 +24,13 @@ const MainRoom = ({ room: initialRoom, players: initialPlayers }: { room: Room, 
   const { player, setUserExists } = useUserCheck(room.id)
 
   const [currentTurnPlayerName, setCurrentTurnPlayerName] = useState('')
-  const [currentTurnPlayerId, setCurrentTurnPlayerId] = useState(room.currentPlayerId)
+  const [currentTurnPlayerId, setCurrentTurnPlayerId] = useState(0)
 
   const router = useRouter()
+
+  useEffect(() => {
+    setCurrentTurnPlayerId(room.currentPlayerId)
+  }, [room.currentPlayerId])
 
   useEffect(() => {
     const fetchLatestRoom = async () => {

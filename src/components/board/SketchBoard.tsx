@@ -57,7 +57,7 @@ const SketchBoard = ({roomId, isStarted, currentTurnPlayerId}: {roomId: string, 
 
   return (
     <>
-      <div className="h-[90%] mx-auto">
+      <div className="h-[80%] mx-auto">
         <Tldraw
           forceMobile
           hideUi={player.id !== currentTurnPlayerId || !isStarted}
