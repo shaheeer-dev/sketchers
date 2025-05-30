@@ -15,7 +15,7 @@ const useUserCheck = (roomId?: string) => {
 
   useEffect(() => {
     try {
-      const storedPlayer = JSON.parse(localStorage.getItem('player') || '')
+      const storedPlayer = JSON.parse(localStorage.getItem('player') || '{}')
 
       if (storedPlayer && (!roomId || storedPlayer.roomId === roomId)) {
         setUserExists(true)
