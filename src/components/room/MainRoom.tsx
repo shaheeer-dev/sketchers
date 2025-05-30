@@ -55,7 +55,6 @@ const MainRoom = ({ room: initialRoom, players: initialPlayers }: { room: Room, 
     socket.on('new-player-turn', handleCurrentPlayerTurn)
     socket.on('scores', handleScores)
 
-
     return () => {
       socket.off('game-started', handleSetStarted)
       socket.off('timeout', handleTimeOut)
@@ -104,7 +103,7 @@ const MainRoom = ({ room: initialRoom, players: initialPlayers }: { room: Room, 
     setDrawableWord(word)
   }
 
-  const handleWindowUnload = () => processLeaveRoom()
+  // const handleWindowUnload = () => processLeaveRoom()
 
   const handleStartGame = () => {
     setIsStarted(true)
@@ -117,7 +116,6 @@ const MainRoom = ({ room: initialRoom, players: initialPlayers }: { room: Room, 
   const getCurrentPlayerName = (playerId: number) => {
     const CurrentPlayer = players.find((p) => p.id === playerId)
     if (CurrentPlayer) {
-      console.log('Current Player name', CurrentPlayer.name)
       setCurrentTurnPlayerName(CurrentPlayer.name)
     }
     return CurrentPlayer?.name
@@ -140,7 +138,7 @@ const MainRoom = ({ room: initialRoom, players: initialPlayers }: { room: Room, 
   return (
     <>
       {
-        isStarted 
+        isStarted
       &&
       <div>
         <div>
@@ -148,15 +146,15 @@ const MainRoom = ({ room: initialRoom, players: initialPlayers }: { room: Room, 
         </div>
         <div className='text-center'>
           <p>{ player.id !== currentTurnPlayerId ? new Array(wordCount).fill('_').join(' ') : drawableWord}</p>
-          <Countdown 
-            isCountdownStarted={isCountdownStarted} 
-            roomId={room.id} 
+          <Countdown
+            isCountdownStarted={isCountdownStarted}
+            roomId={room.id}
             currentPlayerId={currentTurnPlayerId}
             countDownLimit={15}
-            onTimeUp={() => handleTimeOut(drawableWord)} 
+            onTimeUp={() => handleTimeOut(drawableWord)}
           />
         </div>
-      </div> 
+      </div>
       }
       <div className="flex h-screen bg-gray-200">
         <div className="w-1/4 p-4">
@@ -195,7 +193,7 @@ const MainRoom = ({ room: initialRoom, players: initialPlayers }: { room: Room, 
           <Chat player={player} currentTurnPlayerId={currentTurnPlayerId}/>
         </div>
       </div>
-      {        
+      {
         drawableWord &&
           <DisplayWordModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} word={drawableWord}  players={players} playerScores={playerScores} />
       }

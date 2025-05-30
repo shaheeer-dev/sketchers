@@ -66,13 +66,13 @@ const SketchBoard = ({roomId, isStarted, currentTurnPlayerId}: {roomId: string, 
             MainMenu: null,
             DebugMenu: null,
             ActionsMenu: null,
-            MenuPanel: null, 
+            MenuPanel: null,
             QuickActions: null,
             Toolbar: () => <CustomToolbar onClick={() => removeShapes()} />
           }
           }
           cameraOptions={{isLocked: true}}
-          onMount={(editor) => { 
+          onMount={(editor) => {
             editorRef.current = editor
             editor.addListener('change', handleShapeChange)
           }}

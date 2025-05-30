@@ -5,7 +5,8 @@ const useWord = () => {
   const [wordToDraw, setWordToDraw] = useState<string>('')
 
   useEffect(() => {
-    getWord()
+    const word = getWord()
+    setWordToDraw(word)
   }, [])
 
   return { wordToDraw }

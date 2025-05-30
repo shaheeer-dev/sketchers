@@ -4,7 +4,7 @@ import { createPortal } from 'react-dom'
 const DisplayWordModal = ({isOpen, onClose, word, players, playerScores}: { isOpen: boolean, onClose: () => void, word: string, players: Player[], playerScores: Record<string, number>}) => {
 
   if(!isOpen) return null
-  
+
   return (
     createPortal(
       <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center" onClick={onClose}>
