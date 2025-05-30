@@ -8,7 +8,7 @@ import useUserCheck from '@/hooks/useUserCheck'
 const PlayersList = (props: {room: Room, players: Player[], setPlayers: React.Dispatch<React.SetStateAction<Player[]>>, setIsStarted: React.Dispatch<React.SetStateAction<boolean>>, playerScores: Record<string, number>, currentPlayerId: number}) => {
   const {room, players, setPlayers, setIsStarted, currentPlayerId, playerScores} = props
   const [isPlayerListUpdated, setIsPlayerListUpdated] = useState(true)
-  const { player: currentPlayer } = useUserCheck();
+  const { player: currentPlayer } = useUserCheck(room.id)
   const handleNewPlayerJoined = () => {
     setIsPlayerListUpdated(true)
   }
@@ -20,7 +20,6 @@ const PlayersList = (props: {room: Room, players: Player[], setPlayers: React.Di
   }
 
   useEffect(() => {
-
     const fetchPlayers = async () => {
       const response = await axios.get(`/api/rooms/${room.id}/players`)
       const data = response.data
@@ -45,7 +44,7 @@ const PlayersList = (props: {room: Room, players: Player[], setPlayers: React.Di
       <h2 className="text-xl font-bold mb-4">Players List</h2>
 
       {players && (players.map((player) => (
-        <div key={player.id} className={`${ player.id === currentPlayerId ? 'bg-blue-500 text-white' : 'bg-gray-200' } p-2 rounded mb-2`}>
+        <div key={player.id} className={`${room.isStarted && player.id === currentPlayerId ? 'bg-blue-500 text-white' : 'bg-gray-200'} p-2 rounded mb-2`}>
           {player.name} { currentPlayer?.id === player?.id ? '(You)' : '' }
           <span className="float-right">{playerScores[player.id]}</span>
         </div>

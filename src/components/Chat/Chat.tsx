@@ -58,14 +58,14 @@ const Chat = ({ player, currentTurnPlayerId }: { player: Player, currentTurnPlay
                   </div>
                 </>
               ) : (
-              <>
-                <sub>
-                  {data.playerName}
-                </sub>
-                <div className="bg-blue-500 text-white p-2 rounded-lg max-w-xs break-words">
-                  {data.message}
-                </div>
-              </>
+                <>
+                  <sub>
+                    {data.playerName}
+                  </sub>
+                  <div className="bg-blue-500 text-white p-2 rounded-lg max-w-xs break-words">
+                    {data.message}
+                  </div>
+                </>
               )
             }
           </div>

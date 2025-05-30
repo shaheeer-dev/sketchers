@@ -3,7 +3,7 @@ import axios from 'axios'
 import { useState } from 'react'
 
 const PlayerForm = ({ roomId, setPlayer }: { roomId: string, setPlayer: React.Dispatch<React.SetStateAction<boolean>> }) => {
-  const [playerName, setPlayerName] = useState<string>('')
+  const [playerName, setPlayerName] = useState<string>(localStorage.getItem('playerName') || '')
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()

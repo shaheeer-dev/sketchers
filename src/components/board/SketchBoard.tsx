@@ -2,12 +2,11 @@ import React, { useEffect, useRef } from 'react'
 import { Editor, TLShape, Tldraw } from 'tldraw'
 import CustomToolbar from '@/components/toolbar/CustomToolbar'
 import { socket } from '@/socket'
-import { Player, Room } from '@prisma/client'
 import useUserCheck from '@/hooks/useUserCheck'
 
 const SketchBoard = ({roomId, isStarted, currentTurnPlayerId}: {roomId: string, isStarted: boolean, currentTurnPlayerId: number}) => {
   const editorRef = useRef<Editor | null>(null)
-  const { player } = useUserCheck()
+  const { player } = useUserCheck(roomId)
   const handleShapeChange = () => {
     const editor = editorRef.current
 
@@ -47,13 +46,13 @@ const SketchBoard = ({roomId, isStarted, currentTurnPlayerId}: {roomId: string, 
     return () => {
       socket.off('receive-drawing', receiveDrawing)
       socket.off('clear', clearAll)
-      clearAll();
+      clearAll()
 
     }
   }, [])
 
   useEffect(() => {
-    clearAll();
+    clearAll()
   }, [isStarted])
 
   return (

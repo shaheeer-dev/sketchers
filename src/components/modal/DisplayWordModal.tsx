@@ -23,7 +23,7 @@ const DisplayWordModal = ({isOpen, onClose, word, players, playerScores}: { isOp
           </div>
         </div>
       </div>,
-      document.getElementById('modal')!
+      document.getElementById('modal') as HTMLElement
     )
   )
 }

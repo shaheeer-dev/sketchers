@@ -5,7 +5,7 @@ import PlayerForm from '@/components/player/PlayerForm'
 import { Player, Room } from '@prisma/client'
 
 const RoomPage = ({ room, players }: { room: Room, players: Player[] }) => {
-  const { userExists, loading, setUserExists } = useUserCheck()
+  const { userExists, loading, setUserExists } = useUserCheck(room.id)
   
   if(loading) {
     return (

@@ -4,7 +4,7 @@ import { calculateScore } from '../services/calculationService';
 
 type RoomState = {
   wordToDraw: string,
-  startsAt: Date,
+  startsAt: Date | null,
   totalPlayers: number,
   currentGuessedPlayers: string[]
 }
@@ -12,6 +12,9 @@ type RoomState = {
 const roomsState: {[key: string]: RoomState}  = {}
 
 export const handleConnection = (socket: Socket, io: Server) => {
+  socket.on('create-room', (roomId) => {
+    roomsState[roomId] = {wordToDraw: "", startsAt: null, totalPlayers: 0, currentGuessedPlayers: []}
+  })
 
   socket.on('join-room', (roomId) => {
     socket.join(roomId);
@@ -19,7 +22,12 @@ export const handleConnection = (socket: Socket, io: Server) => {
   })
 
   socket.on("start-game", ({wordToDraw, roomId, playerName, totalPlayers}) => {
-    roomsState[roomId] = {wordToDraw: wordToDraw, startsAt: new Date(), totalPlayers: totalPlayers, currentGuessedPlayers: []}
+    roomsState[roomId] = {
+      ...roomsState[roomId],
+      wordToDraw, 
+      totalPlayers,
+      startsAt: new Date()
+    }
 
     socket.to(roomId).emit("game-started", {wordCount: wordToDraw.length, playerName});
   })
