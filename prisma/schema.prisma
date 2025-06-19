@@ -34,10 +34,13 @@ model Player {
   room            Room @relation(fields: [roomId], references: [id] )
 }
 
-
-
-
-
-
-
-
+model User {
+  id        Int      @id @default(autoincrement())
+  uuid      String   @unique @default(uuid()) @db.Uuid
+  fullName  String
+  email     String   @unique
+  username  String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
